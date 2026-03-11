@@ -1,21 +1,21 @@
 # Secure Remote Access for Homelab (Zero Trust Architecture)
 
-## 📌 Project Overview
+##  Project Overview
 This project implements a **Zero Trust Network Access (ZTNA)** solution to provide secure, remote management of an on-premise Proxmox Virtualization Environment.
 
 By utilizing an outbound **Cloudflare Tunnel**, this architecture completely eliminates the need for traditional port forwarding. The home network remains completely closed to inbound traffic from the internet, bypassing Carrier-Grade NAT (CGNAT) issues from ISPs. Access to the infrastructure is protected by an **Identity-Aware Proxy (IAP)** enforcing an Email One-Time PIN (OTP) policy.
 
-## 🏗 Architecture Flow
+##  Architecture Flow
 `User Device` -> `Cloudflare Edge (WAF + DDoS Protection)` -> `Identity Access Policy (Email OTP)` -> `Encrypted Tunnel (cloudflared)` -> `Debian LXC Connector` -> `Proxmox Web UI`
 
-## 🛠 Prerequisites
+##  Prerequisites
 * Proxmox Virtual Environment (VE) running locally.
 * A registered domain name.
 * A free Cloudflare account with your domain configured and active.
 
 ---
 
-## 🚀 Step-by-Step Implementation Guide
+##  Step-by-Step Implementation Guide
 
 ### Step 1: Establish the Cloudflare Tunnel
 Instead of opening ports on a router, we create an outbound connection from the server to Cloudflare.
@@ -91,7 +91,7 @@ To add a second Proxmox node (or any other service):
 
 > 📸 **[Screenshot Placeholder:** Show the main Tunnel overview screen displaying multiple routes/subdomains correctly pointing to different internal IP addresses. **]**
 
-## ✅ Verification and Testing
+##  Verification and Testing
 To verify the setup is working correctly:
 1. Open a new **Incognito/Private** browser window.
 2. Navigate to your secure URL (`https://prox.yourdomain.com`).
