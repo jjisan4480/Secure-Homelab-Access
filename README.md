@@ -27,17 +27,18 @@ Instead of opening ports on a router, we create an outbound connection from the 
 5. In your Proxmox environment, spin up a lightweight Debian LXC container.
 6. Open the console for that container and paste the Cloudflare installation command. 
 
-> 📸 **[Screenshot Placeholder:** Show the Proxmox LXC console displaying the successful installation of the `cloudflared` service. Mark the "Success" message with a green box. **]**
+   > 📸 **Screenshot:** 
+   ![](./ss/1.png)
 
 Once the connector is running, the tunnel status in Cloudflare will show as **Healthy**.
 
 ### Step 2: Route Traffic to the First Proxmox Node
 Now we tell Cloudflare where to send the traffic when someone visits your domain.
 
-1. In the Cloudflare Zero Trust Dashboard, go to **Networks > Tunnels**.
+1. In the Cloudflare Zero Trust Dashboard, go to **Zero Trust >Networks > Tunnels**.
 2. Click the three dots next to your healthy tunnel and select **Configure**.
-3. Select the **Public Hostname** tab at the top.
-4. Click the blue **Add a public hostname** button.
+3. Select the **Published application routes** tab at the top.
+4. Click the blue **Add a Published application routes** button.
 5. Fill in the required details:
    * **Subdomain:** Enter your desired prefix (e.g., `prox`).
    * **Domain:** Select your domain from the dropdown.
@@ -45,7 +46,8 @@ Now we tell Cloudflare where to send the traffic when someone visits your domain
    * **Service Type:** Select **HTTPS** (Crucial for Proxmox).
    * **URL:** Enter the local IP and port of your Proxmox server (e.g., `10.0.0.213:8006`). Do not type `https://` in this box.
 
-> 📸 **[Screenshot Placeholder:** Show the "Public Hostname" form filled out with the subdomain, domain, HTTPS type, and local IP. **]**
+> 📸 **Screenshot:** 
+   ![](./ss/3.png)
 
 6. **Crucial Proxmox Setting:** Because Proxmox uses a self-signed SSL certificate locally, you must tell Cloudflare to accept it.
    * Scroll down and click to expand **Additional application settings**.
@@ -53,7 +55,8 @@ Now we tell Cloudflare where to send the traffic when someone visits your domain
    * Toggle **No TLS Verify** to the **ON** position.
 7. Click **Save hostname**.
 
-> 📸 **[Screenshot Placeholder:** Show the expanded TLS settings menu with the "No TLS Verify" toggle switched on. Mark the toggle with a red arrow. **]**
+>  > 📸 **Screenshot:** 
+   ![](./ss/4.png)
 
 ### Step 3: Enforce Identity & Access Policies (MFA)
 At this point, the URL is live. We must secure it so that only authorized users can view the login page.
@@ -61,21 +64,25 @@ At this point, the URL is live. We must secure it so that only authorized users 
 1. In the Zero Trust Dashboard, navigate to **Access > Applications**.
 2. Click **Add an Application** and select **Self-hosted**.
 3. **Application Configuration:**
-   * **Application Name:** e.g., "Proxmox Access".
+   * **Application Name:** e.g., "Proxmox".
    * **Session Duration:** Set to **24 hours** (This requires you to verify your identity once per day).
    * **Application Domain:** Enter the exact subdomain and domain you created in Step 2.
    * Click **Next**.
 
-> 📸 **[Screenshot Placeholder:** Show the "Basic Information" screen of the application setup, highlighting the Session Duration and Application Domain. **]**
+> 📸 **Screenshot:** 
+   ![](./ss/5.png)
 
 4. **Add a Policy:**
+   * Look for **Access policies**
+   * CLick **Create new policy**
    * **Policy Name:** e.g., "Allow Admin Email".
    * **Action:** Set to **Allow**.
    * Under the **Configure rules** section, set the Selector to **Emails**.
    * In the **Value** box, type your exact email address.
 5. Click **Next**, leave the remaining settings as default, and click **Add application**.
 
-> 📸 **[Screenshot Placeholder:** Show the Policy configuration screen with the "Emails" selector and the specific email address entered. Mark the rules section with a red box. **]**
+> 📸 **Screenshot:** 
+   ![](./ss/6.png)
 
 ### Step 4: If You Want To Add Additional Nodes to the Same Tunnel
 A single `cloudflared` connector can route traffic to multiple devices on the same local network. You do not need multiple tunnels.
@@ -87,9 +94,7 @@ To add a second Proxmox node (or any other service):
 4. Select **HTTPS** and enter the local IP and port of the *second* system (e.g., `10.0.0.216:8006`).
 5. Expand **Additional application settings > TLS** and turn **ON** the **No TLS Verify** toggle.
 6. Click **Save hostname**.
-7. Create a new Application Policy under **Access controls > Applications** for this new subdomain following the exact steps in Step 3.
-
-> 📸 **[Screenshot Placeholder:** Show the main Tunnel overview screen displaying multiple routes/subdomains correctly pointing to different internal IP addresses. **]**
+7. Create a new Application Policy under **Access controls > Applications** for this new subdomain following the exact steps in 
 
 ##  Verification and Testing
 To verify the setup is working correctly:
